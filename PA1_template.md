@@ -1,16 +1,25 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 This document will follow the steps needed to answer questions asked in Peer Review Project #1
 
 **First load up the libraries needed**
-```{r}
+
+```r
 library(ggplot2)
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
 ```
 
 
@@ -21,7 +30,8 @@ Show any code that is needed to
 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
 **A quick load of the csv file with read.csv**
-```{r}
+
+```r
 activityTrackingData <- read.csv("activity.csv", header = TRUE, sep = ",")
 ```
 
@@ -34,7 +44,8 @@ For this part of the assignment, you can ignore the missing values in the datase
 1. Calculate the total number of steps taken per day
 
 **using dlpyr here to omit NA and summarize the total**
-```{r}
+
+```r
 totalStepsPerDay <- activityTrackingData %>% na.omit() %>% group_by(date) %>% summarize(TotalSteps = sum(steps))
 ```
 
@@ -43,19 +54,34 @@ totalStepsPerDay <- activityTrackingData %>% na.omit() %>% group_by(date) %>% su
 2. If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
 
 **Histogram of the total steps by days, note several days are missing due to being entire NAs and thus filtered out by our previous line**
-```{r}
+
+```r
 totalStepHistorgram <- ggplot(data = totalStepsPerDay, aes(totalStepsPerDay$date, totalStepsPerDay$TotalSteps)) + geom_histogram(stat = "identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Day", y = "Total Steps")
 print(totalStepHistorgram)
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
 
 
 3. Calculate and report the mean and median of the total number of steps taken per day
 
 **Mean and median reported below**
-```{r}
+
+```r
 mean(totalStepsPerDay$TotalSteps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(totalStepsPerDay$TotalSteps)
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -65,20 +91,32 @@ median(totalStepsPerDay$TotalSteps)
 
 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-```{r}
+
+```r
 stepsPerTimeInterval <- activityTrackingData %>% na.omit() %>% group_by(interval) %>% summarize(meanSteps = mean(steps))
 
 ggplot(stepsPerTimeInterval, aes(x=interval, y = meanSteps)) + geom_line() + theme(text = element_text(size = 24))
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
 
 
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 **The interval 835 (below) cooresponds to the maximum steps**
-```{r}
+
+```r
 maxInterval <- which.max(stepsPerTimeInterval$meanSteps)
 stepsPerTimeInterval[maxInterval,1]
+```
+
+```
+## Source: local data frame [1 x 1]
+## 
+##   interval
+##      (int)
+## 1      835
 ```
 
 
@@ -89,8 +127,13 @@ Note that there are a number of days/intervals where there are missing values (c
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r}
+
+```r
 sum(is.na(activityTrackingData$steps))
+```
+
+```
+## [1] 2304
 ```
 
 
@@ -104,7 +147,8 @@ sum(is.na(activityTrackingData$steps))
 
 **Loop through all lines in the data frame and replace the NA with the corresponding average from the previously calculated interval average.**
 
-```{r}
+
+```r
 replacedNAactivityTrackingData <- activityTrackingData
 
 for (i in 1:nrow(replacedNAactivityTrackingData)){
@@ -128,14 +172,30 @@ for (i in 1:nrow(replacedNAactivityTrackingData)){
 **Adding estimates based on means of the previous data didn't change the overall data means at all, so several summaries will be roughly the same, just with additional days added into the distributions.  However care should be taken here as even adding more days with the group means could change the interpretation of the data.**
 
 
-```{r}
+
+```r
 totalStepsPerDayNAreplaced <- replacedNAactivityTrackingData %>% group_by(date) %>% summarize(TotalSteps = sum(steps))
 
 totalStepHistorgramNAreplaced <- ggplot(data = totalStepsPerDayNAreplaced, aes(totalStepsPerDayNAreplaced$date, totalStepsPerDayNAreplaced$TotalSteps)) + geom_histogram(stat = "identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Day", y = "Total Steps")
 print(totalStepHistorgramNAreplaced)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+
+```r
 mean(totalStepsPerDayNAreplaced$TotalSteps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(totalStepsPerDayNAreplaced$TotalSteps)
+```
+
+```
+## [1] 10766.19
 ```
 
 
@@ -148,22 +208,24 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 
 **mapply through the dataframe, determining if the day is a weekend or weekday, and bind the new values to a new column**
 
-```{r}
+
+```r
 weekendRef <- c("Sunday","Saturday")
 
 activityTrackingDayType <- cbind(replacedNAactivityTrackingData, dayType = mapply(function(x) if (weekdays(x) %in% weekendRef){"Weekend"}else{"Weekday"}, as.Date(replacedNAactivityTrackingData$date)))
-
 ```
 
 
 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
 
-```{r}
+
+```r
 stepsPerTimeIntervalDaytype <- activityTrackingDayType %>% group_by(interval, dayType) %>% summarize(meanSteps = mean(steps))
 
 ggplot(stepsPerTimeIntervalDaytype, aes(x=interval, y = meanSteps)) + geom_line() + facet_grid(dayType ~ .) + theme(text = element_text(size = 24))
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
 
 
