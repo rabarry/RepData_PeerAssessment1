@@ -55,7 +55,7 @@ For this part of the assignment, you can ignore the missing values in the datase
 
     
     ```r
-    totalStepHistorgram <- ggplot(data = totalStepsPerDay, aes(totalStepsPerDay$TotalSteps)) + geom_histogram() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Total Steps", y = "Frequency")
+    totalStepHistorgram <- ggplot(data = totalStepsPerDay, aes(totalStepsPerDay$TotalSteps)) + geom_histogram() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Total Steps", y = "Count")
     print(totalStepHistorgram)
     ```
     
@@ -179,7 +179,7 @@ Note that there are a number of days/intervals where there are missing values (c
     ```r
     totalStepsPerDayNAreplaced <- replacedNAactivityTrackingData %>% group_by(date) %>% summarize(TotalSteps = sum(steps))
     
-    totalStepHistorgramNAreplaced <- ggplot(data = totalStepsPerDayNAreplaced, aes(totalStepsPerDayNAreplaced$TotalSteps)) + geom_histogram() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Total Steps", y = "Frequency")
+    totalStepHistorgramNAreplaced <- ggplot(data = totalStepsPerDayNAreplaced, aes(totalStepsPerDayNAreplaced$TotalSteps)) + geom_histogram() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Total Steps", y = "Count")
     print(totalStepHistorgramNAreplaced)
     ```
     
