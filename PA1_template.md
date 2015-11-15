@@ -53,11 +53,14 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 2. If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
 
-    **Histogram of the total steps by days, note several days are missing due to being entire NAs and thus filtered out by our previous line**
     
     ```r
-    totalStepHistorgram <- ggplot(data = totalStepsPerDay, aes(totalStepsPerDay$date, totalStepsPerDay$TotalSteps)) + geom_histogram(stat = "identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Day", y = "Total Steps")
+    totalStepHistorgram <- ggplot(data = totalStepsPerDay, aes(totalStepsPerDay$TotalSteps)) + geom_histogram() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Total Steps", y = "Frequency")
     print(totalStepHistorgram)
+    ```
+    
+    ```
+    ## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
     ```
     
     ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
@@ -165,19 +168,23 @@ Note that there are a number of days/intervals where there are missing values (c
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-    **The 8 days which were complete NAs in the original data are now included in the histogram, with the dailiy mean, adding some new bars to the histogram.  Because missing data was entire days and I filled the missing data with the mean of each time segment across all days, all 8 previously missing days have the exact same value, the mean of the previous data.**
+    **The 8 days which were complete NAs in the original data are now included in the histogram, all at the daily mean.**
     
-    **The mean value is the same as the original data due to the way I generated data (using the previous means).  The median however has shifted, and is now equivalent to the mean due to adding several new days which have that value.**
+    **The mean value is the same as the original data due to the way I generated data (using the previous means).  The median however has shifted slightly, and is now equivalent to the mean due to adding several new days which have that value.**
     
-    **Adding estimates based on means of the previous data didn't change the overall data means at all, so several summaries will be roughly the same, just with additional days added into the distributions.  However care should be taken here as even adding more days with the group means could change the interpretation of the data.**
+    **Adding estimates based on means of the previous data created a new spike at the mean, which makes the distirbutin look more centered.**
     
     
     
     ```r
     totalStepsPerDayNAreplaced <- replacedNAactivityTrackingData %>% group_by(date) %>% summarize(TotalSteps = sum(steps))
     
-    totalStepHistorgramNAreplaced <- ggplot(data = totalStepsPerDayNAreplaced, aes(totalStepsPerDayNAreplaced$date, totalStepsPerDayNAreplaced$TotalSteps)) + geom_histogram(stat = "identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Day", y = "Total Steps")
+    totalStepHistorgramNAreplaced <- ggplot(data = totalStepsPerDayNAreplaced, aes(totalStepsPerDayNAreplaced$TotalSteps)) + geom_histogram() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = "Total Steps", y = "Frequency")
     print(totalStepHistorgramNAreplaced)
+    ```
+    
+    ```
+    ## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
     ```
     
     ![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
